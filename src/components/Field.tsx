@@ -1,4 +1,3 @@
-import React from 'react';
 import { PlainClientAPI } from 'contentful-management';
 import { Paragraph } from '@contentful/f36-components';
 import { FieldExtensionSDK } from '@contentful/app-sdk';
