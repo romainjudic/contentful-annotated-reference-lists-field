@@ -1,7 +1,9 @@
 import { PlainClientAPI } from 'contentful-management';
 import { Paragraph } from '@contentful/f36-components';
 import { FieldExtensionSDK } from '@contentful/app-sdk';
+
 import { ContentTypesProvider } from '../stores/ContentTypeStore';
+import { EntriesProvider } from '../stores/EntryStore';
 
 interface FieldProps {
   sdk: FieldExtensionSDK;
@@ -14,7 +16,9 @@ const Field = (props: FieldProps) => {
   // -> https://www.contentful.com/developers/docs/extensibility/field-editors/
   return (
     <ContentTypesProvider cma={props.cma}>
-      <Paragraph>Hello Entry Field Component</Paragraph>
+      <EntriesProvider cma={props.cma}>
+        <Paragraph>Hello Entry Field Component</Paragraph>
+      </EntriesProvider>
     </ContentTypesProvider>
   );
 };
