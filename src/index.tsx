@@ -9,8 +9,8 @@ import {
 import type { KnownSDK } from '@contentful/app-sdk';
 import { GlobalStyles } from '@contentful/f36-components';
 
-import Field from './components/Field';
 import LocalhostWarning from './components/LocalhostWarning';
+import FieldWrapper from './components/FieldWrapper';
 
 if (process.env.NODE_ENV === 'development' && window.self === window.top) {
   // You can remove this if block before deploying your app
@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'development' && window.self === window.top) {
     const ComponentLocationSettings = [
       {
         location: locations.LOCATION_ENTRY_FIELD,
-        component: <Field cma={cma} sdk={sdk as FieldExtensionSDK} />,
+        component: <FieldWrapper cma={cma} sdk={sdk as FieldExtensionSDK} />,
       },
     ];
 
