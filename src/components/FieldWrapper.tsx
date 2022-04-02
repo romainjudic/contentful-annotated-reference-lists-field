@@ -1,17 +1,20 @@
+import { AppProvider } from '../contexts/appContext';
 import { ContentTypesProvider } from '../stores/ContentTypeStore';
 import { EntriesProvider } from '../stores/EntryStore';
 import { FieldProps } from '../types';
 import Field from './Field';
 
 function FieldWrapper(props: FieldProps) {
-  const { cma }  = props;
+  const { cma, sdk }  = props;
   
   return (
-    <ContentTypesProvider cma={cma}>
-      <EntriesProvider cma={cma}>
-        <Field {...props} />
-      </EntriesProvider>
-    </ContentTypesProvider>
+    <AppProvider cma={cma} sdk={sdk}>
+      <ContentTypesProvider>
+        <EntriesProvider>
+          <Field {...props} />
+        </EntriesProvider>
+      </ContentTypesProvider>
+    </AppProvider>
   );
 }
 

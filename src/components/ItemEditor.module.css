@@ -1,0 +1,11 @@
+.root {
+  padding: .25rem 1rem;
+}
+
+.textInput {
+  width: auto;
+}
+
+.entryPreview {
+  flex: 1;
+}

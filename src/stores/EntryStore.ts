@@ -1,6 +1,7 @@
 import { useCallback, useReducer } from 'react';
-import { EntryProps, PlainClientAPI } from 'contentful-management';
+import { EntryProps } from 'contentful-management';
 import constate from 'constate';
+import { useApp } from '../contexts/appContext';
 
 interface EntryMap {
   [id: string]: 'failed' | undefined | EntryProps;
@@ -31,8 +32,8 @@ function reducer(state: EntryMap, action: Action): EntryMap {
 const initialState = {};
 
 
-function useEntryStore(props: { cma: PlainClientAPI }) {
-  const { cma } = props;
+function useEntryStore() {
+  const { cma } = useApp();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const loadEntry = useCallback(async (id: string) => {

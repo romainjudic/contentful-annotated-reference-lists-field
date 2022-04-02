@@ -1,6 +1,8 @@
 import { useCallback, useReducer } from 'react';
-import { ContentTypeProps, PlainClientAPI } from 'contentful-management';
+import { ContentTypeProps } from 'contentful-management';
 import constate from 'constate';
+
+import { useApp } from '../contexts/appContext';
 
 interface ContentTypeMap {
   [id: string]: 'failed' | undefined | ContentTypeProps;
@@ -31,8 +33,8 @@ function reducer(state: ContentTypeMap, action: Action): ContentTypeMap {
 const initialState = {};
 
 
-function useContentTypeStore(props: { cma: PlainClientAPI }) {
-  const { cma } = props;
+function useContentTypeStore() {
+  const { cma } = useApp();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const loadContentType = useCallback(async (id: string) => {
