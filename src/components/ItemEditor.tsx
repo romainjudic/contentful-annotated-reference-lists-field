@@ -6,6 +6,7 @@ import { ChangeEvent } from 'react';
 import clsx from 'clsx';
 
 import { AnnotatedReference } from '../types';
+import { useApp } from '../contexts/appContext';
 import EntryPreview from './EntryPreview';
 
 import styles from './ItemEditor.module.css';
@@ -17,6 +18,7 @@ interface ItemEditorProps {
 }
 
 function ItemEditor({ value, onChange, onDelete }: ItemEditorProps) {
+  const { textLabel } = useApp();
   const {
     attributes,
     isDragging,
@@ -41,7 +43,7 @@ function ItemEditor({ value, onChange, onDelete }: ItemEditorProps) {
       <div className={styles.cardContent}>
         <DragHandle label="Reorder this item" ref={setNodeRef} {...attributes} {...listeners} />
         <Stack className={styles.contentRoot}>
-          <TextInput value={value.text} onChange={handleTextChange} aria-label="Item text" placeholder="Item text" size="small" className={styles.textInput} />
+          <TextInput value={value.text} onChange={handleTextChange} aria-label={textLabel} placeholder={textLabel} size="small" className={styles.textInput} />
           <EntryPreview entryId={value.referenceId} className={styles.entryPreview} />
           <Tooltip placement="top" content="Delete item">
             <IconButton icon={<DeleteIcon />} onClick={onDelete} variant="transparent" aria-label="Delete item" />

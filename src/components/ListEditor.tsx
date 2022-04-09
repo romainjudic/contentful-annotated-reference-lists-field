@@ -29,7 +29,7 @@ function ItemsWrapper({ children }: { children: ReactNode }) {
 }
 
 function ListEditor({ value, onChange, onDelete }: ListEditorProps) {
-  const { sdk } = useApp();
+  const { sdk, contentTypes } = useApp();
   const { title, items } = value;
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -41,7 +41,10 @@ function ListEditor({ value, onChange, onDelete }: ListEditorProps) {
   }
 
   async function addItem() {
-    const options = {};
+    const options: Parameters<typeof sdk.dialogs.selectMultipleEntries>[0] = {};
+    if (contentTypes) {
+      options.contentTypes = contentTypes;
+    }
     try {
       const selectedEntries = await sdk.dialogs.selectMultipleEntries<Entry>(options);
       if (!selectedEntries) {
