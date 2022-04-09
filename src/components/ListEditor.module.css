@@ -1,0 +1,12 @@
+.items {
+  width: 100%;
+}
+
+.itemsActiveDragging {
+  margin: -.5rem;
+  padding: .5rem;
+  width: calc(100% + 1rem);
+  border-radius: 6px;
+  outline: 1px dashed #CFD9E0; /* Forma 365 gray300 color */
+  background-color: #F7F9FA; /* Forma 365 gray100 color */
+}

@@ -1,5 +1,18 @@
 .root {
-  padding: .25rem 1rem;
+  padding: 0;
+}
+
+.cardContent {
+  display: flex;
+}
+
+.contentRoot {
+  flex-grow: 1;
+  padding: .25rem 0 .25rem 1rem;
+}
+
+.dragging {
+  background-color: #F7F9FA; /* Forma 365 gray100 color */
 }
 
 .textInput {

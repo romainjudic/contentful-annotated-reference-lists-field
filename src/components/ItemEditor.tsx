@@ -1,6 +1,9 @@
-import { Card, IconButton, Stack, TextInput, Tooltip } from '@contentful/f36-components';
+import { Card, DragHandle, IconButton, Stack, TextInput, Tooltip } from '@contentful/f36-components';
 import { DeleteIcon } from '@contentful/f36-icons';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { ChangeEvent } from 'react';
+import clsx from 'clsx';
 
 import { AnnotatedReference } from '../types';
 import EntryPreview from './EntryPreview';
@@ -14,20 +17,37 @@ interface ItemEditorProps {
 }
 
 function ItemEditor({ value, onChange, onDelete }: ItemEditorProps) {
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: value.key });
 
   function handleTextChange(event: ChangeEvent<HTMLInputElement>) {
+    console.log('hello');
     onChange({ ...value, text: event.target.value });
   }
 
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
   return (
-    <Card className={styles.root}>
-      <Stack>
-        <TextInput value={value.text} onChange={handleTextChange} aria-label="Item text" placeholder="Item text" size="small" className={styles.textInput} />
-        <EntryPreview entryId={value.referenceId} className={styles.entryPreview} />
-        <Tooltip placement="top" content="Delete item">
-          <IconButton icon={<DeleteIcon />} onClick={onDelete} variant="transparent" aria-label="Delete item" />
-        </Tooltip>
-      </Stack>
+    <Card
+      className={clsx(styles.root, { [styles.dragging]: isDragging })}
+      style={style}
+    >
+      <div className={styles.cardContent}>
+        <DragHandle label="Reorder this item" ref={setNodeRef} {...attributes} {...listeners} />
+        <Stack className={styles.contentRoot}>
+          <TextInput value={value.text} onChange={handleTextChange} aria-label="Item text" placeholder="Item text" size="small" className={styles.textInput} />
+          <EntryPreview entryId={value.referenceId} className={styles.entryPreview} />
+          <Tooltip placement="top" content="Delete item">
+            <IconButton icon={<DeleteIcon />} onClick={onDelete} variant="transparent" aria-label="Delete item" />
+          </Tooltip>
+        </Stack>
+      </div>
     </Card>
   );
 }

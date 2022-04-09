@@ -1,12 +1,17 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, ReactNode, useMemo } from 'react';
 import { Button, Card, Stack, TextInput } from '@contentful/f36-components';
 import { DeleteIcon, PlusIcon } from '@contentful/f36-icons';
+import { DndContext, DragEndEvent, PointerSensor, useDndContext, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Entry } from 'contentful-management';
 import { v4 as uuidv4 } from 'uuid';
-import { useApp } from '../contexts/appContext';
+import clsx from 'clsx';
 
+import { useApp } from '../contexts/appContext';
 import { AnnotatedReference, AnnotatedReferenceList } from '../types';
 import ItemEditor from './ItemEditor';
+
+import styles from './ListEditor.module.css';
 
 interface ListEditorProps {
   value: AnnotatedReferenceList;
@@ -14,9 +19,22 @@ interface ListEditorProps {
   onDelete: () => void;
 }
 
+function ItemsWrapper({ children }: { children: ReactNode }) {
+  const { active } = useDndContext();
+  return (
+    <Stack flexDirection="column" className={clsx(styles.items, { [styles.itemsActiveDragging]: active })}>
+      {children}
+    </Stack>
+  );
+}
+
 function ListEditor({ value, onChange, onDelete }: ListEditorProps) {
   const { sdk } = useApp();
   const { title, items } = value;
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    // TODO: keyboard sensor?
+  );
 
   function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
     onChange({...value, title: event.target.value });
@@ -70,19 +88,43 @@ function ListEditor({ value, onChange, onDelete }: ListEditorProps) {
     }
   }
 
+  function handleDragItemEnd(event: DragEndEvent) {
+    const { active, over }  = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = items.findIndex(item => item.key === active.id);
+      const newIndex = items.findIndex(item => item.key === over.id);
+      onChange({
+        ...value,
+        items: arrayMove(items, oldIndex, newIndex),
+      });
+    }
+  }
+
+  const sortableItems = useMemo(() => items.map(item => ({ ...items, id: item.key })), [items])
+
   return (
     <>
       <Card>
         <Stack flexDirection="column" alignItems="flex-start">
           <TextInput value={title} onChange={handleTitleChange} aria-label="List name" placeholder="List name" />
-          {items.map(item => (
-            <ItemEditor
-              key={item.key}
-              value={item}
-              onChange={handleItemChange}
-              onDelete={() => deletItem(item)}
-            />
-          ))}
+          <DndContext
+            sensors={sensors}
+            onDragEnd={handleDragItemEnd}
+          >
+            <SortableContext items={sortableItems} strategy={verticalListSortingStrategy}>
+              <ItemsWrapper>
+                {items.map(item => (
+                  <ItemEditor
+                    key={item.key}
+                    value={item}
+                    onChange={handleItemChange}
+                    onDelete={() => deletItem(item)}
+                  />
+                ))}
+              </ItemsWrapper>
+            </SortableContext>
+          </DndContext>
           <Stack justifyContent="flex-start">
             <Button onClick={addItem} startIcon={<PlusIcon />}>Add items</Button>
             <Button
