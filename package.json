@@ -1,7 +1,12 @@
 {
   "name": "contentful-annotated-reference-lists-field",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": {
+    "name": "Romain Judic",
+    "email": "judic.romain@gmail.com",
+    "url": "https://github.com/romainjudic"
+  },
   "dependencies": {
     "@contentful/app-sdk": "^4.3.5",
     "@contentful/f36-components": "^4.4.0",
